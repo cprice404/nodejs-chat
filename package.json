@@ -2,9 +2,13 @@
   "name": "nodejs-chat",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": "4.6.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/cprice404/nodejs-chat/issues"
   },
-  "homepage": "https://github.com/cprice404/nodejs-chat#readme"
+  "homepage": "https://github.com/cprice404/nodejs-chat#readme",
+  "dependencies": {
+    "bufferutil": "1.2.1",
+    "express": "4.14.0",
+    "utf-8-validate": "1.2.1",
+    "ws": "1.1.1"
+  }
 }
