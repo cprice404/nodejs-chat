@@ -3,11 +3,19 @@
 const Hapi = require('hapi');
 const Joi = require('joi');
 const Good = require('good');
+const Bunyan = require('bunyan');
 const Path = require('path');
+const MessageQueue = require('./lib/message_queue')
 
 const PORT = process.env.PORT || 3000;
 const INDEX = Path.join(__dirname, 'public', 'index.html');
-const LATEST_MESSAGES_NUM_MESSAGES = 10;
+
+const log = Bunyan.createLogger({
+    name: 'root',
+    level: 'debug'
+})
+
+const mq = new MessageQueue.MessageQueue(log)
 
 const server = new Hapi.Server();
 server.connection({
@@ -22,29 +30,36 @@ server.register(require('inert'), (err) => {
 })
 
 server.register({
-    register: Good,
-    options: {
-        reporters: {
-            console: [{
-                module: 'good-squeeze',
-                name: 'Squeeze',
-                args: [{
-                    response: '*',
-                    log: '*'
+        register: Good,
+        options: {
+            reporters: {
+                bunyan: [{
+                    module: 'good-bunyan',
+                    args: [
+                        { ops: '*', response: '*', log: '*', error: '*', request: '*'},
+                        {
+                            logger: log,
+                            levels: {
+                                request: 'info',
+                                response: 'info',
+                                log: 'info',
+                                ops: 'debug'
+                            }
+                            //formatters: {
+                            //    response: (data) => {
+                            //        return 'Response  for ' + data.path
+                            //    }
+                            //}
+                        }
+                    ]
                 }]
-            }, {
-                module: 'good-console'
-            }, 'stdout']
+            }
         }
-    }
-}, (err) => {
-    if (err) {
-        throw err;
-    }
-})
-
-
-var messages = []
+    }, (err) => {
+        if (err) {
+            throw err;
+        }
+    })
 
 server.route([
     {
@@ -58,7 +73,7 @@ server.route([
         method: 'GET',
         path: '/latest-messages',
         handler: function(request, reply) {
-            return reply(messages)
+            return reply(mq.latestMessages())
         }
     },
     {
@@ -78,15 +93,13 @@ server.route([
                 }).options({ allowUnknown: true})
             },
             handler: function (request, reply) {
-                var message = JSON.parse(request.payload)
+                var data = JSON.parse(request.payload)
+                var message = new MessageQueue.Message(
+                    server.info.host, data.type, data.user, data.message,
+                    Date.now());
+                mq.submit(message)
 
-                messages.push(message)
-                if (messages.length > LATEST_MESSAGES_NUM_MESSAGES) {
-                    messages.shift()
-                }
-                server.log('debug', "Messages length is now: " + messages.length)
-                server.log('debug', "Got message: '" + message.message + "'")
-                return reply(message.message)
+                return reply(message)
             }
         }
     }
