@@ -1,11 +1,12 @@
 'use strict';
 
 const Hapi = require('hapi');
+const Joi = require('joi');
 const Good = require('good');
-const path = require('path');
+const Path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'public', 'index.html');
+const INDEX = Path.join(__dirname, 'public', 'index.html');
 
 const server = new Hapi.Server();
 server.connection({
@@ -41,14 +42,44 @@ server.register({
     }
 })
 
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: function (request, reply) {
-        return reply.file(INDEX)
-    }
-})
 
+var messages = []
+
+server.route([
+    {
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+            return reply.file(INDEX)
+        }
+    },
+    {
+        method: 'POST',
+        path: '/submit-message',
+        config: {
+            // Disable automatic JSON parsing and take care of it in the handler
+            // to provide more control over performance.  Might also be worth
+            // playing with 'stream' output setting.
+            payload: {
+                parse: false,
+                output: 'data'
+            },
+            validate: {
+                headers: Joi.object({
+                    'content-type': Joi.string().valid("application/json").required()
+                }).options({ allowUnknown: true})
+            },
+            handler: function (request, reply) {
+                var message = JSON.parse(request.payload)
+
+                messages.push(message)
+                server.log('debug', "Messages length is now: " + messages.length)
+                server.log('debug', "Got message: '" + message.message + "'")
+                return reply(message.message)
+            }
+        }
+    }
+])
 
 server.start((err) => {
     if (err) {
