@@ -7,6 +7,7 @@ const Path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const INDEX = Path.join(__dirname, 'public', 'index.html');
+const LATEST_MESSAGES_NUM_MESSAGES = 10;
 
 const server = new Hapi.Server();
 server.connection({
@@ -54,6 +55,13 @@ server.route([
         }
     },
     {
+        method: 'GET',
+        path: '/latest-messages',
+        handler: function(request, reply) {
+            return reply(messages)
+        }
+    },
+    {
         method: 'POST',
         path: '/submit-message',
         config: {
@@ -73,6 +81,9 @@ server.route([
                 var message = JSON.parse(request.payload)
 
                 messages.push(message)
+                if (messages.length > LATEST_MESSAGES_NUM_MESSAGES) {
+                    messages.shift()
+                }
                 server.log('debug', "Messages length is now: " + messages.length)
                 server.log('debug', "Got message: '" + message.message + "'")
                 return reply(message.message)
