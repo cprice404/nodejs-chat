@@ -1,11 +1,37 @@
 'use strict';
 
-const express = require('express');
+const Hapi = require('hapi');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'html', 'index.html');
+const INDEX = path.join(__dirname, 'public', 'index.html');
 
-const server = express()
-        .use((req, res) => res.sendFile(INDEX) )
-        .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+const server = new Hapi.Server();
+server.connection({
+    host: 'localhost',
+    port: PORT
+})
+
+server.register(require('inert'), (err) => {
+
+    if (err) {
+        throw err
+    }
+
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+            console.log("Got request matching route")
+            return reply.file(INDEX)
+        }
+    })
+})
+
+
+server.start((err) => {
+    if (err) {
+        throw err;
+    }
+    console.log('Server running at:', server.info.uri)
+})
