@@ -1,6 +1,7 @@
 'use strict';
 
 const Hapi = require('hapi');
+const Good = require('good');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
@@ -13,19 +14,39 @@ server.connection({
 })
 
 server.register(require('inert'), (err) => {
-
     if (err) {
         throw err
     }
+})
 
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: function (request, reply) {
-            console.log("Got request matching route")
-            return reply.file(INDEX)
+server.register({
+    register: Good,
+    options: {
+        reporters: {
+            console: [{
+                module: 'good-squeeze',
+                name: 'Squeeze',
+                args: [{
+                    response: '*',
+                    log: '*'
+                }]
+            }, {
+                module: 'good-console'
+            }, 'stdout']
         }
-    })
+    }
+}, (err) => {
+    if (err) {
+        throw err;
+    }
+})
+
+server.route({
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+        return reply.file(INDEX)
+    }
 })
 
 
@@ -33,5 +54,5 @@ server.start((err) => {
     if (err) {
         throw err;
     }
-    console.log('Server running at:', server.info.uri)
+    server.log('info', 'Server running at:' + server.info.uri)
 })
