@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,8 @@
     "good-squeeze": "5.0.0",
     "hapi": "15.1.1",
     "inert": "4.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "1.11.0"
   }
 }
