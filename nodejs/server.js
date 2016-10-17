@@ -8,27 +8,33 @@ const Handlebars = require('handlebars');
 const Good = require('good');
 const Bunyan = require('bunyan');
 
+const JSX = require('node-jsx').install();
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
 const Path = require('path');
-const MessageQueue = require('./lib/message_queue')
+
+const MessageQueue = require('./lib/message_queue');
+const ChatApp = React.createFactory(require('./components/chat_app.react'));
 
 const PORT = process.env.PORT || 3000;
 
 const log = Bunyan.createLogger({
     name: 'root',
     level: 'debug'
-})
+});
 
-const mq = new MessageQueue.MessageQueue(log)
+const mq = new MessageQueue.MessageQueue(log);
 
 const server = new Hapi.Server();
 server.connection({
     host: 'localhost',
     port: PORT
-})
+});
 
 server.register(require('inert'), (err) => {
     Hoek.assert(!err, err)
-})
+});
 
 server.register({
     register: Good,
@@ -58,10 +64,10 @@ server.register({
     }
 }, (err) => {
     Hoek.assert(!err, err)
-})
+});
 
 server.register(Vision, (err) => {
-    Hoek.assert(!err, err)
+    Hoek.assert(!err, err);
 
     server.views({
         engines: {
@@ -70,22 +76,27 @@ server.register(Vision, (err) => {
         path: 'templates',
         layoutPath: 'templates/layout',
         layout: 'default'
-    })
-})
+    });
+});
 
 server.route([
     {
         method: 'GET',
         path: '/',
         handler: function (request, reply) {
-            return reply.view('index', {message: "Hello, Templated World!"})
+
+            var markup = ReactDOMServer.renderToString(ChatApp(mq));
+
+            return reply.view('index', {
+                markup: markup
+            });
         }
     },
     {
         method: 'GET',
         path: '/latest-messages',
         handler: function(request, reply) {
-            return reply(mq.latestMessages())
+            return reply(mq.latestMessages());
         }
     },
     {
@@ -105,19 +116,19 @@ server.route([
                 }).options({ allowUnknown: true})
             },
             handler: function (request, reply) {
-                var data = JSON.parse(request.payload)
+                var data = JSON.parse(request.payload);
                 var message = new MessageQueue.Message(
                     server.info.host, data.type, data.user, data.message,
                     Date.now());
-                mq.submit(message)
+                mq.submit(message);
 
-                return reply(message)
+                return reply(message);
             }
         }
     }
-])
+]);
 
 server.start((err) => {
-    Hoek.assert(!err, err)
-    server.log('info', 'Server running at:' + server.info.uri)
-})
+    Hoek.assert(!err, err);
+    server.log('info', 'Server running at:' + server.info.uri);
+});
