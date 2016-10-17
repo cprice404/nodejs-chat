@@ -23,4 +23,5 @@ MessageQueue.prototype.submit= function(message) {
 }
 
 
-exports.MessageQueue = MessageQueue;
+exports.MessageQueue = MessageQueue
+exports.MAX_MESSAGES = MAX_MESSAGES
