@@ -8,6 +8,3 @@ module.exports = {
     MAX_MESSAGES: message_queue.MAX_MESSAGES,
     Message: message.Message,
 }
-exports.funk = function() {
-    console.log("FUNK!")
-}

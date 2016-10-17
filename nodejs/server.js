@@ -2,13 +2,16 @@
 
 const Hapi = require('hapi');
 const Joi = require('joi');
+const Hoek = require('hoek');
+const Vision = require('vision');
+const Handlebars = require('handlebars');
 const Good = require('good');
 const Bunyan = require('bunyan');
+
 const Path = require('path');
 const MessageQueue = require('./lib/message_queue')
 
 const PORT = process.env.PORT || 3000;
-const INDEX = Path.join(__dirname, 'public', 'index.html');
 
 const log = Bunyan.createLogger({
     name: 'root',
@@ -24,49 +27,58 @@ server.connection({
 })
 
 server.register(require('inert'), (err) => {
-    if (err) {
-        throw err
-    }
+    Hoek.assert(!err, err)
 })
 
 server.register({
-        register: Good,
-        options: {
-            reporters: {
-                bunyan: [{
-                    module: 'good-bunyan',
-                    args: [
-                        { ops: '*', response: '*', log: '*', error: '*', request: '*'},
-                        {
-                            logger: log,
-                            levels: {
-                                request: 'info',
-                                response: 'info',
-                                log: 'info',
-                                ops: 'debug'
-                            }
-                            //formatters: {
-                            //    response: (data) => {
-                            //        return 'Response  for ' + data.path
-                            //    }
-                            //}
+    register: Good,
+    options: {
+        reporters: {
+            bunyan: [{
+                module: 'good-bunyan',
+                args: [
+                    { ops: '*', response: '*', log: '*', error: '*', request: '*'},
+                    {
+                        logger: log,
+                        levels: {
+                            request: 'info',
+                            response: 'info',
+                            log: 'info',
+                            ops: 'debug'
                         }
-                    ]
-                }]
-            }
+                        //formatters: {
+                        //    response: (data) => {
+                        //        return 'Response  for ' + data.path
+                        //    }
+                        //}
+                    }
+                ]
+            }]
         }
-    }, (err) => {
-        if (err) {
-            throw err;
-        }
+    }
+}, (err) => {
+    Hoek.assert(!err, err)
+})
+
+server.register(Vision, (err) => {
+    Hoek.assert(!err, err)
+
+    server.views({
+        engines: {
+            hbs: Handlebars
+        },
+        path: 'templates',
+        layoutPath: 'templates/layout',
+        layout: 'default'
     })
+})
 
 server.route([
     {
         method: 'GET',
         path: '/',
         handler: function (request, reply) {
-            return reply.file(INDEX)
+            return reply.view('index', {message: "Hello, Templated World!"})
         }
     },
     {
@@ -106,8 +118,6 @@ server.route([
 ])
 
 server.start((err) => {
-    if (err) {
-        throw err;
-    }
+    Hoek.assert(!err, err)
     server.log('info', 'Server running at:' + server.info.uri)
 })

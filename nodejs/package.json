@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha tests --recursive",
     "testwatch": "mocha tests --recursive --watch",
-    "start": "nodemon server.js |bunyan"
+    "start": "nodemon --ext js,hbs server.js |bunyan"
   },
   "repository": {
     "type": "git",
@@ -25,8 +25,10 @@
     "bunyan": "1.8.3",
     "good": "7.0.2",
     "good-bunyan": "1.0.0",
+    "handlebars": "4.0.5",
     "hapi": "15.1.1",
-    "inert": "4.0.2"
+    "inert": "4.0.2",
+    "vision": "4.1.0"
   },
   "devDependencies": {
     "chai": "3.5.0",
