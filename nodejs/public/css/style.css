@@ -1,0 +1,104 @@
+*
+{
+    box-sizing: border-box;
+}
+
+body
+{
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+
+    margin: 0;
+    padding: 0 0 40px 0;
+
+    color: white;
+    background: #2c3e50;
+}
+
+
+.messages
+{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+.message
+{
+    position: relative;
+
+    display: block;
+    overflow: hidden;
+
+    max-height: 0px;
+    margin: 0;
+
+    list-style-type: none;
+
+    color: #2c3e50;
+    border-radius: 3px;
+    background: white;
+    box-shadow: 0 3px 0 #eee;
+}
+
+.message.active
+{
+    max-height: 125px;
+    margin: 20px 0;
+
+    -webkit-transition: 1s all ease;
+    -moz-transition: 1s all ease;
+    -ms-transition: 1s all ease;
+    -o-transition: 1s all ease;
+    transition: 1s all ease;
+}
+
+
+.message blockquote
+{
+    font-size: 14px;
+
+    display: inline-block;
+    float: right;
+
+    width: calc(100% - 72px);
+    margin: 0;
+    padding: 10px;
+}
+
+.message blockquote cite
+{
+    font-weight: bold;
+    font-style: normal;
+}
+
+.message blockquote .username
+{
+    display: inline-block;
+
+    margin-right: 5px;
+
+    text-decoration: none;
+
+    color: #1abc9c;
+}
+
+.message blockquote .timestamp
+{
+    font-size: 13px;
+    font-weight: normal;
+
+    margin-right: 5px;
+
+    color: #ccc;
+    /*color: #f00;*/
+}
+
+.message blockquote .content
+{
+
+    /*display: block;*/
+    /*clear: left;*/
+
+    /*margin-top: 5px;*/
+}

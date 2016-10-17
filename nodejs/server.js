@@ -94,6 +94,15 @@ server.route([
     },
     {
         method: 'GET',
+        path: '/css/{file*}',
+        handler: {
+            directory: {
+                path: 'public/css'
+            }
+        }
+    },
+    {
+        method: 'GET',
         path: '/latest-messages',
         handler: function(request, reply) {
             return reply(mq.latestMessages());
