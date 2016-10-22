@@ -9,8 +9,8 @@
   "scripts": {
     "test": "mocha tests --recursive",
     "testwatch": "mocha tests --recursive --watch",
-    "start": "nodemon --ext js,hbs server.js |bunyan",
-    "browserify": "browserify client/app.js |uglifyjs > public/js/bundle.js"
+    "start": "nodemon --ext js,hbs src/server.js |bunyan",
+    "browserify": "browserify src/client/app.js |uglifyjs > src/public/js/bundle.js"
   },
   "repository": {
     "type": "git",

@@ -29,7 +29,12 @@ const mq = new MessageQueue.MessageQueue(log);
 const server = new Hapi.Server();
 server.connection({
     host: 'localhost',
-    port: PORT
+    port: PORT,
+    routes: {
+        files: {
+            relativeTo: __dirname,
+        }
+    }
 });
 
 server.register(require('inert'), (err) => {
@@ -73,6 +78,7 @@ server.register(Vision, (err) => {
         engines: {
             hbs: Handlebars
         },
+        relativeTo: __dirname,
         path: 'templates',
         layoutPath: 'templates/layout',
         layout: 'default'
@@ -107,7 +113,7 @@ server.route([
         path: '/js/{file*}',
         handler: {
             directory: {
-                path: 'public/js'
+                path: './public/js'
             }
         }
     },
