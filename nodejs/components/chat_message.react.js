@@ -8,11 +8,11 @@ const ChatMessage = React.createClass({
     render: function() {
         var message = this.props.message;
         return (
-            <li key={message._id} className="message active">
+            <li className="message active">
                 <blockquote>
                     <cite>
-                        <span className="timestamp">{message.timestamp.toLocaleTimeString()}</span>
-                        <span className="username">{message.username}</span>
+                        <span className="timestamp">{new Date(message.timestamp).toLocaleTimeString()}</span>
+                        <span className="username">{message.user}</span>
                     </cite>
                     <span className="content">{message.message}</span>
                 </blockquote>

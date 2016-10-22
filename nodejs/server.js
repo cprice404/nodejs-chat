@@ -88,7 +88,8 @@ server.route([
             var markup = ReactDOMServer.renderToString(ChatApp(mq));
 
             return reply.view('index', {
-                markup: markup
+                markup: markup,
+                state: JSON.stringify(mq.latestMessages())
             });
         }
     },
@@ -98,6 +99,15 @@ server.route([
         handler: {
             directory: {
                 path: 'public/css'
+            }
+        }
+    },
+    {
+        method: 'GET',
+        path: '/js/{file*}',
+        handler: {
+            directory: {
+                path: 'public/js'
             }
         }
     },

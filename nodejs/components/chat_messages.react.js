@@ -9,7 +9,7 @@ const ChatMessages = React.createClass({
     render: function() {
         var content = this.props.messages.map(function(message) {
            return (
-             <ChatMessage key={message._id} message={message} />
+             <ChatMessage key={message.message_id} message={message} />
            );
         });
 
