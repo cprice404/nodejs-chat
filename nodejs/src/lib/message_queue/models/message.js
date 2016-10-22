@@ -1,11 +1,10 @@
 "use strict";
 
-var nextId = 1;
+const Uuid = require('uuid');
 
 var Message = function(server_id, type, user, message, timestamp) {
     this.server_id = server_id;
-    this.message_id = nextId;
-    nextId++;
+    this.message_id = Uuid.v4();
     this.type = type;
     this.user = user;
     this.message = message;

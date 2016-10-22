@@ -24,7 +24,9 @@ const log = Bunyan.createLogger({
     level: 'debug'
 });
 
-const mq = new MessageQueue.MessageQueue(log);
+const config = require('./config/dev');
+
+const mq = new MessageQueue.MessageQueue(log, config.couchbase);
 
 const server = new Hapi.Server();
 server.connection({

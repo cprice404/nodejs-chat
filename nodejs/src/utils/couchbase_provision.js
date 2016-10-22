@@ -8,7 +8,7 @@ const couchbase = require('couchbase');
 class cluster {
     constructor(config) {
         // local json object for Class properties.  ES6 does not
-        //  include suport for class properties beyond setter/getters.
+        //  include support for class properties beyond setter/getters.
         //  The constructor instantiates a "config" and passes this
         //  through the provisioning process.
 
@@ -184,7 +184,8 @@ class cluster {
                         authType: "none",
                         name: locals.bucket.name,
                         proxyPort: locals.bucket.proxyPort,
-                        ramQuotaMB: locals.bucket.ramQuotaMB
+                        ramQuotaMB: locals.bucket.ramQuotaMB,
+                        flushEnabled: 1,
                     },
                     auth: {
                         'user': locals.user,
