@@ -10,7 +10,8 @@
     "test": "mocha tests --recursive",
     "testwatch": "mocha tests --recursive --watch",
     "start": "nodemon --ext js,hbs src/server.js |bunyan",
-    "browserify": "browserify src/client/app.js |uglifyjs > src/public/js/bundle.js"
+    "browserify": "browserify src/client/app.js |uglifyjs > src/public/js/bundle.js",
+    "couchbase-provision": "node ./src/utils/couchbase_provision.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/cprice404/nodejs-chat#readme",
   "dependencies": {
     "bunyan": "1.8.3",
+    "couchbase": "2.2.3",
     "good": "7.0.2",
     "good-bunyan": "1.0.0",
     "handlebars": "4.0.5",
@@ -39,7 +41,8 @@
     "chai": "3.5.0",
     "mocha": "3.1.2",
     "nodemon": "1.11.0",
-    "reactify": "1.1.1"
+    "reactify": "1.1.1",
+    "request": "2.75.0"
   },
   "browserify": {
     "transform": [
