@@ -93,12 +93,19 @@ server.route([
         path: '/',
         handler: function (request, reply) {
 
-            var markup = ReactDOMServer.renderToString(ChatApp(mq));
-
-            return reply.view('index', {
-                markup: markup,
-                state: JSON.stringify(mq.latestMessages())
-            });
+            mq.latestMessages()
+                .then((messages) => {
+                    var markup = ReactDOMServer.renderToString(
+                        ChatApp({messages: messages})
+                    );
+                    reply.view('index', {
+                        markup: markup,
+                        state: JSON.stringify(messages)
+                    });
+                })
+                .catch((err) => {
+                    log.error('Unable to retrieve latest messages: ', err);
+                });
         }
     },
     {
@@ -123,7 +130,13 @@ server.route([
         method: 'GET',
         path: '/latest-messages',
         handler: function(request, reply) {
-            return reply(mq.latestMessages());
+            mq.latestMessages()
+                .then((messages) =>  {
+                    reply(messages);
+                })
+                .catch((err) => {
+                    log.error('Unable to retrieve latest messages: ', err);
+                });
         }
     },
     {

@@ -1,5 +1,10 @@
 'use strict'
 
+// TODO: tests are currently broken since we switched from in-memory to
+// couchbase for persistence.  Need to refactor to abstract couchbase out
+// of message queue implementation so we can pass in a mock db object here,
+// or set the tests up to work with a test database.
+
 const expect = require('chai').expect
 
 const MessageQueue = require('../../lib/message_queue')

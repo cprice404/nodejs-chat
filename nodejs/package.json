@@ -7,8 +7,8 @@
     "node": "6.9.0"
   },
   "scripts": {
-    "test": "mocha tests --recursive",
-    "testwatch": "mocha tests --recursive --watch",
+    "test": "mocha src/tests --recursive",
+    "testwatch": "mocha src/tests --recursive --watch",
     "start": "nodemon --ext js,hbs src/server.js |bunyan",
     "browserify": "browserify src/client/app.js |uglifyjs > src/public/js/bundle.js",
     "couchbase-provision": "node ./src/utils/couchbase_provision.js",

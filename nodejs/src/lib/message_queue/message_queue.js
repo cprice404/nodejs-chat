@@ -1,9 +1,10 @@
 "use strict";
 
-const MAX_MESSAGES = 10;
+const MAX_MESSAGES = 20;
 
 const Couchbase = require('couchbase');
 const Hoek = require('hoek');
+const N1qlQuery = require('couchbase').N1qlQuery;
 
 var MessageQueue = function(logger, couchbase_config) {
     if (!logger) {
@@ -12,7 +13,6 @@ var MessageQueue = function(logger, couchbase_config) {
     if (!couchbase_config) {
         throw new Error('Missing required argument to MessageQueue constructor: `couchbase_config`')
     }
-    this.messages = []
     this.log = logger
     this.cluster = new Couchbase.Cluster(`couchbase://${couchbase_config.hostName}`);
 
@@ -23,20 +23,25 @@ var MessageQueue = function(logger, couchbase_config) {
 }
 
 MessageQueue.prototype.latestMessages = function() {
-    return this.messages;
+    var query = N1qlQuery.fromString('SELECT * FROM `nodejs-chat` ORDER BY timestamp DESC LIMIT ' + MAX_MESSAGES);
+    return new Promise((resolve, reject) => {
+        this.bucket.query(query, (err, res) => {
+            if (err) {
+                this.log.warn('query failed', err);
+                reject(err);
+                return;
+            }
+            this.log.trace('success!', res);
+            resolve(res.map((message) => message["nodejs-chat"]).reverse());
+        });
+    });
 }
 
-MessageQueue.prototype.submit= function(message) {
+MessageQueue.prototype.submit = function(message) {
     this.bucket.insert(message.message_id, message, (err, result) => {
         Hoek.assert(!err, err);
-        this.log.info("Saved doc: %j", result)
+        this.log.trace("Saved doc: %j", result)
     });
-    // TODO use promises and/or get rid of this stuff
-    this.messages.push(message)
-    if (this.messages.length > MAX_MESSAGES) {
-        this.messages.shift()
-    }
-    this.log.debug("Messages length is now: " + this.messages.length)
 }
 
 // TODO: add shutdown method to disconnect bucket, plumb through to server
@@ -44,4 +49,3 @@ MessageQueue.prototype.submit= function(message) {
 
 
 exports.MessageQueue = MessageQueue
-exports.MAX_MESSAGES = MAX_MESSAGES
