@@ -30,7 +30,7 @@ class NodeJSReadWriteSimulation extends Simulation {
               |}
             """.stripMargin)).asJSON)
         .exec(http("index")
-          .get("/"))
+          .get("/messages/user/${userId}"))
     }
 
 //  setUp(scn.inject(rampUsers(100) over (10 seconds)).protocols(httpConf))

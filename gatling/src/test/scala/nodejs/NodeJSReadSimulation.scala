@@ -17,8 +17,9 @@ class NodeJSReadSimulation extends Simulation {
 
   val scn = scenario("NodeJS Chat") // A scenario is a chain of requests and pauses
     .feed(userIdFeeder)
-    .repeat(Config.NUM_REPETITIONS) {exec(http("index")
-      .get("/"))
+    .repeat(Config.NUM_REPETITIONS) {
+      exec(http("index")
+        .get("/messages/user/${userId}"))
     }
 
 //  setUp(scn.inject(rampUsers(100) over (10 seconds)).protocols(httpConf))

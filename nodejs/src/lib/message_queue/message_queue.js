@@ -37,6 +37,21 @@ MessageQueue.prototype.latestMessages = function() {
     });
 }
 
+MessageQueue.prototype.messagesByUser = function(username) {
+    var query = N1qlQuery.fromString('SELECT * FROM `nodejs-chat` WHERE `user` = \'' + username + '\'');
+    return new Promise((resolve, reject) => {
+        this.bucket.query(query, (err, res) => {
+            if (err) {
+                this.log.warn('query failed', err);
+                reject(err);
+                return;
+            }
+            this.log.trace('success!', res);
+            resolve(res.map((message) => message["nodejs-chat"]));
+        });
+    });
+}
+
 MessageQueue.prototype.submit = function(message) {
     this.bucket.insert(message.message_id, message, (err, result) => {
         Hoek.assert(!err, err);

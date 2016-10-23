@@ -49,6 +49,7 @@ class cluster {
             .then(this._bucket)
             .then(this._loaded.bind(this))
             .then(this._primaryIndex.bind(this))
+            .then(this._bucketIndexes)
             .then(this._finish.bind(this))
             .catch((err) => {
                 console.log("ERR:", err)
@@ -264,6 +265,32 @@ class cluster {
                             return;
                         }
                         console.log("    CREATE PRIMARY INDEX ON BUCKET: OK");
+                        bucket.disconnect();
+                        resolve(locals);
+                    });
+                });
+            });
+    }
+
+    _bucketIndexes(locals) {
+        return new Promise(
+            (resolve, reject) => {
+                var cluster = new couchbase.Cluster(`couchbase://${locals.hostName}`);
+                var bucket = cluster.openBucket(locals.bucket.name, null, (err) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    var bucketManager = bucket.manager();
+                    bucketManager.createIndex('nodejs_chat_index_message_user',
+                        ["user"],
+                        {ignoreIfExists: true}, (err) => {
+                        if (err) {
+                            bucket.disconnect();
+                            reject(err);
+                            return;
+                        }
+                        console.log("    CREATE USER INDEX ON BUCKET: OK");
                         bucket.disconnect();
                         resolve(locals);
                     });

@@ -140,6 +140,19 @@ server.route([
         }
     },
     {
+        method: 'GET',
+        path: '/messages/user/{user}',
+        handler: function(request, reply) {
+            mq.messagesByUser(request.params.user)
+                .then((messages) =>  {
+                    reply(messages);
+                })
+                .catch((err) => {
+                    log.error('Unable to retrieve messages for user: ', err);
+                });
+        }
+    },
+    {
         method: 'POST',
         path: '/submit-message',
         config: {
