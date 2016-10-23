@@ -14,7 +14,6 @@
     "couchbase-provision": "node ./src/utils/couchbase_provision.js",
     "couchbase-flush": "node ./src/utils/couchbase_flush.js",
     "gatling": "cd ../gatling && sbt 'gatling:testOnly nodejs.NodeJSChatSimulation'"
-
   },
   "repository": {
     "type": "git",
@@ -35,6 +34,7 @@
     "hapi": "15.1.1",
     "inert": "4.0.2",
     "node-jsx": "0.13.3",
+    "pm2": "2.0.18",
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "uuid": "2.0.3",
