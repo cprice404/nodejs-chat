@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
-class NodeJSChatSimulation extends Simulation {
+class NodeJSWriteSimulation extends Simulation {
 
   val httpConf = http
     .baseURL("http://localhost:3000") // Here is the root for all relative URLs
@@ -17,24 +17,22 @@ class NodeJSChatSimulation extends Simulation {
 
   val scn = scenario("NodeJS Chat") // A scenario is a chain of requests and pauses
     .feed(userIdFeeder)
-    .repeat(10) {
+    .repeat(Config.NUM_REPETITIONS) {
       exec(
         http("submit")
           .post("/submit-message")
           .body(StringBody(
             """
               |{
-              | "user": "feederuser${userId}",
+              | "user": "user${userId}",
               | "type": "message",
-              | "message": "HOWZIT"
+              | "message": "Hey, how's it going?"
               |}
             """.stripMargin)).asJSON)
-        .exec(http("index")
-          .get("/"))
     }
 
 //  setUp(scn.inject(rampUsers(100) over (10 seconds)).protocols(httpConf))
 //   setUp(scn.inject(atOnceUsers(100)).protocols(httpConf))
-  setUp(scn.inject(atOnceUsers(10)).protocols(httpConf))
+  setUp(scn.inject(atOnceUsers(Config.NUM_USERS)).protocols(httpConf))
 }
 
