@@ -32,7 +32,7 @@ MessageQueue.prototype.latestMessages = function() {
                 return;
             }
             this.log.trace('success!', res);
-            resolve(res.map((message) => message["nodejs-chat"]).reverse());
+            resolve(res.map((message) => message["nodejs-chat"]));
         });
     });
 }

@@ -12,7 +12,9 @@
     "start": "nodemon --ext js,hbs src/server.js |bunyan",
     "browserify": "browserify src/client/app.js |uglifyjs > src/public/js/bundle.js",
     "couchbase-provision": "node ./src/utils/couchbase_provision.js",
-    "couchbase-flush": "node ./src/utils/couchbase_flush.js"
+    "couchbase-flush": "node ./src/utils/couchbase_flush.js",
+    "gatling": "cd ../gatling && sbt 'gatling:testOnly nodejs.NodeJSChatSimulation'"
+
   },
   "repository": {
     "type": "git",
