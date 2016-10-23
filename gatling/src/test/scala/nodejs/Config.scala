@@ -1,6 +1,6 @@
 package nodejs
 
 object Config {
-  val NUM_USERS = 200
-  val NUM_REPETITIONS = 10
+  val NUM_USERS = 1000
+  val NUM_REPETITIONS = 30
 }

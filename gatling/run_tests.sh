@@ -28,11 +28,28 @@ stop_node()
     kill $nodejs_pid
 }
 
+start_cluster()
+{
+    pushd ../nodejs
+    ./node_modules/.bin/pm2 start src/server.js -i max
+    popd
+}
+
+stop_cluster()
+{
+    pushd ../nodejs
+    ./node_modules/.bin/pm2 stop all
+    popd
+}
+
 
 start_node
 flush_couch
-sbt "gatling:testOnly nodejs.NodeJSWriteSimulation"
-sbt "gatling:testOnly nodejs.NodeJSReadSimulation"
-flush_couch
+#sbt "gatling:testOnly nodejs.NodeJSWriteSimulation"
 sbt "gatling:testOnly nodejs.NodeJSReadWriteSimulation"
+sbt "gatling:testOnly nodejs.NodeJSReadSimulation"
 stop_node
+flush_couch
+start_cluster
+sbt "gatling:testOnly nodejs.NodeJSReadSimulation_Clustered"
+stop_cluster
