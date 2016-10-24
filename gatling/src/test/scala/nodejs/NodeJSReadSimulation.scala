@@ -19,7 +19,7 @@ class NodeJSReadSimulation extends Simulation {
     .feed(userIdFeeder)
     .repeat(Config.NUM_REPETITIONS) {
       exec(http("index")
-        .get("/messages/user/${userId}"))
+        .get("/users/${userId}"))
     }
 
 //  setUp(scn.inject(rampUsers(100) over (10 seconds)).protocols(httpConf))

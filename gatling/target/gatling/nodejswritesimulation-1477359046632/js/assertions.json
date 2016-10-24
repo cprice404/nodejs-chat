@@ -1,0 +1,10 @@
+{
+  "simulation": "nodejs.NodeJSWriteSimulation",
+  "simulationId": "nodejswritesimulation",
+  "start": 1477359046632,
+  "description": "",
+  "scenarios": ["NodeJS Chat"],
+  "assertions": [
+
+  ]
+}

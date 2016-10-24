@@ -23,8 +23,8 @@ module.exports = {
         },
         user: "admin",
         password: "password",
-        indexMemQuota: 256,
-        dataMemQuota: 1024,
+        indexMemQuota: 1024,
+        dataMemQuota: 2048,
         ftsMemoryQuota: 0,
     }
 }

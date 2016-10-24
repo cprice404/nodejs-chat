@@ -109,6 +109,26 @@ server.route([
         }
     },
     {
+        // TODO: DRY this up w/previous route
+        method: 'GET',
+        path: '/users/{user}',
+        handler: function (request, reply) {
+            mq.messagesByUser(request.params.user)
+                .then((messages) => {
+                    var markup = ReactDOMServer.renderToString(
+                        ChatApp({messages: messages})
+                    );
+                    reply.view('index', {
+                        markup: markup,
+                        state: JSON.stringify(messages)
+                    });
+                })
+                .catch((err) => {
+                    log.error('Unable to retrieve latest messages: ', err);
+                });
+        }
+    },
+    {
         method: 'GET',
         path: '/css/{file*}',
         handler: {

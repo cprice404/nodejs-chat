@@ -1,0 +1,10 @@
+{
+  "simulation": "nodejs.NodeJSReadSimulation",
+  "simulationId": "nodejsreadsimulation",
+  "start": 1477359093823,
+  "description": "",
+  "scenarios": ["NodeJS Chat"],
+  "assertions": [
+
+  ]
+}

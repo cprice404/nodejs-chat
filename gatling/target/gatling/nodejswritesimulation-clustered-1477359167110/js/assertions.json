@@ -1,0 +1,10 @@
+{
+  "simulation": "nodejs.NodeJSWriteSimulation_Clustered",
+  "simulationId": "nodejswritesimulation-clustered",
+  "start": 1477359167110,
+  "description": "",
+  "scenarios": ["NodeJS Chat"],
+  "assertions": [
+
+  ]
+}

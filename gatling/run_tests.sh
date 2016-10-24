@@ -11,7 +11,7 @@ set -e
 start_node()
 {
     pushd ../nodejs
-    node src/server.js > >(./node_modules/.bin/bunyan) &
+    node src/server.js > >(./node_modules/.bin/bunyan > nodejs.log) &
     nodejs_pid=$!
     popd
 }
@@ -43,13 +43,20 @@ stop_cluster()
 }
 
 
-start_node
 flush_couch
-#sbt "gatling:testOnly nodejs.NodeJSWriteSimulation"
-sbt "gatling:testOnly nodejs.NodeJSReadWriteSimulation"
+sleep 5
+start_node
+sleep 5
+sbt "gatling:testOnly nodejs.NodeJSWriteSimulation"
+#sbt "gatling:testOnly nodejs.NodeJSReadWriteSimulation"
+sleep 5
 sbt "gatling:testOnly nodejs.NodeJSReadSimulation"
 stop_node
 flush_couch
+sleep 5
 start_cluster
+sleep 5
+sbt "gatling:testOnly nodejs.NodeJSWriteSimulation_Clustered"
+sleep 5
 sbt "gatling:testOnly nodejs.NodeJSReadSimulation_Clustered"
 stop_cluster
